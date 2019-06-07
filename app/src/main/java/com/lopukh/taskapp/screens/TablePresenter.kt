@@ -6,11 +6,19 @@ class TablePresenter(private val view: TableView) {
 
     lateinit var notes: ArrayList<Note>
 
-    fun loadDate(){
+    fun loadNotes(){
         notes = ArrayList<Note>()
         if (isBaseEmpty()){
             notes = firstRun()
         }
+        view.showDate(notes)
+    }
+
+    fun addNote(){
+        val lastNoteNumber = notes.lastIndex
+        val lastNoteTitle = notes[notes.lastIndex].title
+        val newNote = Note((lastNoteTitle.toInt()+1).toString())
+        notes.add(newNote)
         view.showDate(notes)
     }
 

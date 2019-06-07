@@ -11,13 +11,14 @@ import com.lopukh.taskapp.R
 
 class TableActivity : AppCompatActivity(), TableView {
 
-    override fun showDate(notes: ArrayList<Note>) {
-        adapter.notes(notes)
-    }
-
     lateinit var recyclerView: RecyclerView
     lateinit var adapter: ListAdapter
     lateinit var presenter: TablePresenter
+
+    override fun showDate(notes: ArrayList<Note>) {
+        adapter.notes(notes)
+        recyclerView.smoothScrollToPosition(adapter.itemCount)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,10 +32,10 @@ class TableActivity : AppCompatActivity(), TableView {
         adapter.notes(ArrayList())
         recyclerView.adapter = adapter
         adapter.notes()
-        presenter.loadDate()
+        presenter.loadNotes()
     }
 
     fun onClickAddNote(view: View){
-
+        presenter.addNote()
     }
 }
