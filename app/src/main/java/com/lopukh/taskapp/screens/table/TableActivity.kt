@@ -7,13 +7,18 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lopukh.taskapp.POJO.Note
-import com.lopukh.taskapp.adapters.ListAdapter
 import com.lopukh.taskapp.R
+import com.lopukh.taskapp.adapters.ListAdapter
+
+
+
+
 
 class TableActivity : AppCompatActivity(), TableView {
-    lateinit var recyclerView: RecyclerView
-    lateinit var adapter: ListAdapter
-    lateinit var presenter: TablePresenter
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: ListAdapter
+    private lateinit var presenter: TablePresenter
+    private var retainedFragment: TableRetainedFragment? = null
 
     override fun showDate(notes: ArrayList<Note>) {
         adapter.notes(notes)
@@ -35,7 +40,16 @@ class TableActivity : AppCompatActivity(), TableView {
         adapter = ListAdapter()
         adapter.notes(ArrayList())
         recyclerView.adapter = adapter
-        adapter.notes()
+        val fm = supportFragmentManager
+        retainedFragment = fm.findFragmentByTag("notes") as TableRetainedFragment?
+        if (retainedFragment == null){ //Первый запуск приложения
+            retainedFragment = TableRetainedFragment()
+            fm.beginTransaction().add(retainedFragment!!, "notes").commit()
+        }
+        presenter.setListNotes(retainedFragment!!.notes())
+        presenter.getNotes()
+
+
         ItemTouchHelper(
             object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT.or(ItemTouchHelper.RIGHT)){
             override fun onMove(
@@ -50,12 +64,14 @@ class TableActivity : AppCompatActivity(), TableView {
                 presenter.removeNote(viewHolder.adapterPosition)
             }
         }).attachToRecyclerView(recyclerView)
-
-
-        presenter.loadNotes()
     }
 
     fun onClickAddNote(view: View){
         presenter.addNote()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        retainedFragment!!.notes(presenter.getListNotes())
     }
 }

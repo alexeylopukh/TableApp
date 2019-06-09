@@ -4,20 +4,25 @@ import com.lopukh.taskapp.POJO.Note
 
 class TablePresenter(private val view: TableView) {
 
-    lateinit var notes: ArrayList<Note>
+    private lateinit var notes: ArrayList<Note>
 
-    fun loadNotes(){
-        notes = ArrayList<Note>()
-        if (isBaseEmpty()){
-            notes = firstRun()
-        }
+    fun getNotes(){
         view.showDate(notes)
     }
 
+    fun initNotes(){
+        notes = ArrayList()
+        for (i in 1..100){
+            notes.add(Note(i.toString()))
+        }
+    }
+
     fun addNote(){
-        val lastNoteNumber = notes.lastIndex
-        val lastNoteTitle = notes[notes.lastIndex].title
-        val newNote = Note((lastNoteTitle.toInt()+1).toString())
+        val lastNoteTitle = if (notes.isNotEmpty()){
+            notes[notes.lastIndex].title.toInt()
+        }else
+            0
+        val newNote = Note((lastNoteTitle+1).toString())
         notes.add(newNote)
         view.showDate(notes)
     }
@@ -27,15 +32,15 @@ class TablePresenter(private val view: TableView) {
         view.onItemRemoved(position)
     }
 
-    fun isBaseEmpty(): Boolean{
-        return true
-    }
-
-    fun firstRun():ArrayList<Note>{
-        val notes = ArrayList<Note>()
-        for (i in 1..100){
-            notes.add(Note(i.toString()))
-        }
+    fun getListNotes(): ArrayList<Note>{
         return notes
     }
+
+    fun setListNotes(notes: ArrayList<Note>?){
+        if (notes == null)
+            initNotes()
+        else
+            this.notes = notes
+    }
+
 }
