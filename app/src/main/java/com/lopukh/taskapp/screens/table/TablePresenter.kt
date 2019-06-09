@@ -1,4 +1,4 @@
-package com.lopukh.taskapp.screens
+package com.lopukh.taskapp.screens.table
 
 import com.lopukh.taskapp.POJO.Note
 
@@ -20,6 +20,11 @@ class TablePresenter(private val view: TableView) {
         val newNote = Note((lastNoteTitle.toInt()+1).toString())
         notes.add(newNote)
         view.showDate(notes)
+    }
+
+    fun removeNote(position: Int){
+        notes.removeAt(position)
+        view.onItemRemoved(position)
     }
 
     fun isBaseEmpty(): Boolean{
