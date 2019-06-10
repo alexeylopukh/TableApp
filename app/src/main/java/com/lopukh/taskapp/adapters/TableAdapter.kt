@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.lopukh.taskapp.POJO.Note
 import com.lopukh.taskapp.R
 
-class ListAdapter: RecyclerView.Adapter<ListAdapter.ViewHolder>() {
+class TableAdapter: RecyclerView.Adapter<TableAdapter.ViewHolder>() {
 
     private lateinit var notes: ArrayList<Note>
 

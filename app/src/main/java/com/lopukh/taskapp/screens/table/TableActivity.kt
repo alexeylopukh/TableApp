@@ -8,15 +8,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lopukh.taskapp.POJO.Note
 import com.lopukh.taskapp.R
-import com.lopukh.taskapp.adapters.ListAdapter
-
-
-
-
+import com.lopukh.taskapp.adapters.TableAdapter
+import com.lopukh.taskapp.helpers.JsonHelper
 
 class TableActivity : AppCompatActivity(), TableView {
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: ListAdapter
+    private lateinit var adapter: TableAdapter
     private lateinit var presenter: TablePresenter
     private var retainedFragment: TableRetainedFragment? = null
 
@@ -33,40 +30,39 @@ class TableActivity : AppCompatActivity(), TableView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_table)
         presenter = TablePresenter(this)
+        presenter.database = JsonHelper(this)
         recyclerView = findViewById(R.id.table_view)
         val linearLayoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, true)
         linearLayoutManager.stackFromEnd = true
         recyclerView.layoutManager = linearLayoutManager
-        adapter = ListAdapter()
+        adapter = TableAdapter()
         adapter.notes(ArrayList())
         recyclerView.adapter = adapter
         val fm = supportFragmentManager
         retainedFragment = fm.findFragmentByTag("notes") as TableRetainedFragment?
-        if (retainedFragment == null){ //Первый запуск приложения
+        if (retainedFragment == null) { //Первый запуск приложения
             retainedFragment = TableRetainedFragment()
             fm.beginTransaction().add(retainedFragment!!, "notes").commit()
         }
         presenter.setListNotes(retainedFragment!!.notes())
         presenter.getNotes()
-
-
         ItemTouchHelper(
-            object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT.or(ItemTouchHelper.RIGHT)){
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                TODO("not implemented")
-            }
+            object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT.or(ItemTouchHelper.RIGHT)) {
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
+                    TODO("not implemented")
+                }
 
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                presenter.removeNote(viewHolder.adapterPosition)
-            }
-        }).attachToRecyclerView(recyclerView)
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    presenter.removeNote(viewHolder.adapterPosition)
+                }
+            }).attachToRecyclerView(recyclerView)
     }
 
-    fun onClickAddNote(view: View){
+    fun onClickAddNote(view: View) {
         presenter.addNote()
     }
 

@@ -1,6 +1,5 @@
 package com.lopukh.taskapp.POJO
 
-class Note(
-    val title: String
-) {
+
+class Note(val title: String) {
 }
